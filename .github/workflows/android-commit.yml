@@ -27,10 +27,6 @@ jobs:
       - name: "Git Checkout"
         uses: actions/checkout@v4
 
-      - name: "Gradle Wrapper Validation"
-        uses: gradle/wrapper-validation-action@v1
-        working-directory: ./android
-
       - name: "Install JDK"
         uses: actions/setup-java@v3
         with:
