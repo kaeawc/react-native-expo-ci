@@ -32,20 +32,20 @@ jobs:
       - name: "Git Checkout"
         uses: actions/checkout@v4
 
-      - name: "Install Node"
+      - name: "Setup Node"
         uses: actions/setup-node@v4
         with:
           node-version: 16
           cache: "npm"
 #
-#      - name: "Restore Node Modules"
-#        id: cache-npm
-#        uses: actions/cache/restore@v3
-#        with:
-#          path: node_modules
-#          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
+      - name: "Restore Node Modules"
+        id: cache-npm
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
 
-      - name: "Run Unit Tests via NPM"
+      - name: "NPM Install"
         run: npm install
 
       - name: "Run Unit Tests via NPM"
@@ -57,9 +57,9 @@ jobs:
         with:
           report_paths: 'build/reports/jest-junit/junit.xml'
 
-#      - name: "Save Node Modules"
-#        uses: actions/cache/save@v3
-#        if: steps.cache-npm.outputs.cache-hit != 'true'
-#        with:
-#          path: node_modules
-#          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
+      - name: "Save Node Modules"
+        uses: actions/cache/save@v3
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        with:
+          path: node_modules
+          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
