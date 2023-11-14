@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     paths:
-      - '.github/'
+      - '.github/android-commit.yml'
       - 'android/app/'
       - 'android/build.gradle.kts'
       - 'android/settings.gradle.kts'
