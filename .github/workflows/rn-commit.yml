@@ -46,6 +46,7 @@ jobs:
           key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
 
       - name: "NPM Install"
+        if: steps.cache-npm.outputs.cache-hit != 'true'
         run: npm install
 
       - name: "Run Unit Tests via NPM"
