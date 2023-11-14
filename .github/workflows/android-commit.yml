@@ -6,11 +6,11 @@ on:
   pull_request:
     paths:
       - '.github/'
-      - 'app/'
-      - 'build.gradle.kts'
-      - 'settings.gradle.kts'
-      - 'gradle/wrapper/'
-      - 'gradle.properties'
+      - 'android/app/'
+      - 'android/build.gradle.kts'
+      - 'android/settings.gradle.kts'
+      - 'android/gradle/wrapper/'
+      - 'android/gradle.properties'
 
 permissions:
   checks: write

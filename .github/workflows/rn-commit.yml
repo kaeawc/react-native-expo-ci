@@ -1,0 +1,158 @@
+name: "Android Commit"
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    paths:
+      - '.github/'
+      - 'app/'
+      - 'assets/'
+      - 'components/'
+      - 'constants/'
+      - 'app.json'
+      - 'babel.config.js'
+      - 'metro.config.js'
+      - 'package-lock.json'
+      - 'package.json'
+      - 'tsconfig.json'
+
+permissions:
+  checks: write
+
+env:
+  # Setting an environment variable with the value of a configuration variable
+  env_var: ${{ vars.ENV_CONTEXT_VAR }}
+
+jobs:
+  unit_tests:
+    name: "Unit Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Git Checkout"
+        uses: actions/checkout@v4
+
+      - name: "Install Node"
+        uses: actions/setup-node
+
+      - name: "Restore Gradle Build Cache"
+        id: cache-npm
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
+
+      - name: "Run Unit Tests via NPM"
+        working-directory: ./android
+        run: |
+          npm run test
+
+      - name: "Publish Test Report"
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure() # always run even if the previous step fails
+        with:
+          report_paths: '**/android/build/test-results/testDebugUnitTest/TEST-*.xml'
+
+      - name: "Store Gradle Profiler Report"
+        uses: actions/upload-artifact@v3
+        with:
+          name: gradle-profiler-report
+          path: |
+            android/build/reports/gradle-profiler
+
+      - name: "Store Configuration Cache Report"
+        uses: actions/upload-artifact@v3
+        with:
+          name: configuration-cache-report
+          path: |
+            android/build/reports/configuration-cache/**/*.html
+
+      - name: "Save Gradle Wrapper"
+        uses: actions/cache/save@v3
+        if: steps.cache-gradle-wrapper.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.gradle/wrapper
+          key:
+            v1-${{ runner.os }}-gradle-wrapper-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: "Save Gradle Build Cache"
+        uses: actions/cache/save@v3
+        if: steps.cache-gradle-build.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.gradle/caches/build-cache-*
+          key:
+            v1-${{ runner.os }}-gradle-build-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('android/gradle/libs.versions.toml') }}-${{ hashFiles('android/gradle.properties') }}-${{ hashFiles('/tmp/gradle_flags.txt') }}-${{ hashFiles('**/*.gradle.kts') }}-${{ hashFiles('**/*.kt') }}
+
+      - name: "Prepare Gradle Project & Home Caches for Configuration Cache"
+        if: steps.cache-gradle-home-project.outputs.cache-hit != 'true'
+        run: |
+
+          # TODO: Once convention plugins are added we will need to preserve its build folder
+          echo "Preserve project Gradle cache"
+          find .gradle -maxdepth 1 -type d \
+            -regex ".gradle/.*" \
+            -not -regex ".*/8.0.1" \
+            -not -regex ".*/configuration-cache" | \
+            xargs rm -rf
+
+          echo " "
+          echo "Preserve Gradle home cache"
+          find ~/.gradle/caches -maxdepth 1 -type d \
+            -regex ".*/caches/.*" \
+            -not -regex ".*/8.0.1" \
+            -not -regex ".*/modules-2" \
+            -not -regex ".*/jars-9" \
+            -not -regex ".*/transforms-3" | \
+            xargs rm -rf
+
+          echo " "
+          echo "Preserve Gradle home configuration cache keystore and any generated Gradle jars"
+          find ~/.gradle/caches/8.0.1 -maxdepth 1 -type d \
+            -regex ".*/caches/8.0.1/.*" \
+            -not -regex ".*/cc-keystore" \
+            -not -regex ".*/kotlin-dsl" \
+            -not -regex ".*/generated-gradle-jars" | \
+            xargs rm -rf
+          
+          # Remove Kotlin build results from any convention plugin build folder
+
+      - name: "Save Gradle Home & Project cache"
+        uses: actions/cache/save@v3
+        if: steps.cache-gradle-home-project.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.gradle/caches
+            .gradle
+          key:
+            v1-${{ runner.os }}-gradle-home-project-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('android/gradle/libs.versions.toml') }}-${{ hashFiles('android/gradle.properties') }}-${{ hashFiles('/tmp/gradle_flags.txt') }}-${{ hashFiles('**/*.gradle.kts') }}
+
+      - name: "Prepare Gradle Home Cache with only Dependency & Script Caches"
+        if: steps.cache-gradle-home-project.outputs.cache-hit != 'true' && steps.cache-gradle-home.outputs.cache-hit != 'true'
+        run: |
+
+          echo " "
+          echo "Preserve Gradle home cache"
+          find ~/.gradle/caches -maxdepth 1 -type d \
+            -regex ".*/caches/.*" \
+            -not -regex ".*/8.0.1" \
+            -not -regex ".*/modules-2" | \
+            xargs rm -rf
+          
+          echo " "
+          echo "Preserve Gradle home configuration cache keystore and any generated Gradle jars"
+          find ~/.gradle/caches/8.0.1 -maxdepth 1 -type d \
+            -regex ".*/caches/8.0.1/.*" \
+            -not -regex ".*/kotlin-dsl" \
+            -not -regex ".*/generated-gradle-jars" | \
+            xargs rm -rf
+
+      - name: "Save Gradle Home cache"
+        uses: actions/cache/save@v3
+        if: steps.cache-gradle-home-project.outputs.cache-hit != 'true' && steps.cache-gradle-home.outputs.cache-hit != 'true'
+        with:
+          path: |
+            ~/.gradle/caches
+          key:
+            v1-${{ runner.os }}-gradle-home-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('android/gradle/libs.versions.toml') }}-${{ hashFiles('android/gradle.properties') }}
