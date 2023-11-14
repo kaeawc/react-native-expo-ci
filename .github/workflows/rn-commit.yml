@@ -1,4 +1,4 @@
-name: "Android Commit"
+name: "RN Commit"
 
 on:
   push:
@@ -32,11 +32,11 @@ jobs:
       - name: "Git Checkout"
         uses: actions/checkout@v4
 
-#      - name: "Install Node"
-#        uses: actions/setup-node@v4
-#        with:
-#          node-version: 16
-#          cache: "npm"
+      - name: "Install Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: "npm"
 #
 #      - name: "Restore Node Modules"
 #        id: cache-npm
