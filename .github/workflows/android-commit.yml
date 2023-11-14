@@ -42,7 +42,7 @@ jobs:
 
       - name: "NPM Install"
         if: steps.cache-npm.outputs.cache-hit != 'true'
-        run: npm install
+        run: npm install --force
 
       - name: "Install JDK"
         uses: actions/setup-java@v3
