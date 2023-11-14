@@ -46,6 +46,9 @@ jobs:
 #          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
 
       - name: "Run Unit Tests via NPM"
+        run: npm install
+
+      - name: "Run Unit Tests via NPM"
         run: npm run test
 
       - name: "Publish Test Report"
