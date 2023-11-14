@@ -12,6 +12,16 @@
   "jest": {
     "preset": "jest-expo"
   },
+  "jest-junit": {
+    "suiteName": "jest tests",
+    "outputDirectory": "build/reports/jest-junit",
+    "outputName": "junit.xml",
+    "uniqueOutputName": "false",
+    "classNameTemplate": "{classname}-{title}",
+    "titleTemplate": "{classname}-{title}",
+    "ancestorSeparator": " › ",
+    "usePathForSuiteName": "true"
+  },
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@react-navigation/native": "^6.1.9",
