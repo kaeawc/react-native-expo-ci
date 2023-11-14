@@ -173,20 +173,24 @@ jobs:
             v1-${{ runner.os }}-gradle-build-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('android/gradle/libs.versions.toml') }}
             v1-${{ runner.os }}-gradle-build-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
 
-      - name: "Run Unit Tests via Gradle"
+#      - name: "Run Gradle Task with Profiler"
+#        working-directory: ./android
+#        run: |
+#          /tmp/gradle-profiler-0.20.0/bin/gradle-profiler \
+#            --project-dir ./ \
+#            --profile chrome-trace \
+#            --output-dir build/reports/gradle-profiler \
+#            --gradle-user-home ~/.gradle \
+#            --measure-config-time \
+#            --measure-gc \
+#            --iterations 1 \
+#            --warmups 1 \
+#            --measure-local-build-cache \
+#            assembleDebug $GRADLE_FLAGS
+
+      - name: "Run Gradle Task"
         working-directory: ./android
-        run: |
-          /tmp/gradle-profiler-0.20.0/bin/gradle-profiler \
-            --project-dir ./ \
-            --profile chrome-trace \
-            --output-dir build/reports/gradle-profiler \
-            --gradle-user-home ~/.gradle \
-            --measure-config-time \
-            --measure-gc \
-            --iterations 1 \
-            --warmups 1 \
-            --measure-local-build-cache \
-            assembleDebug $GRADLE_FLAGS
+        run: ./gradlew assembleDebug $GRADLE_FLAGS
 
       - name: "Publish Test Report"
         uses: mikepenz/action-junit-report@v4
