@@ -27,6 +27,23 @@ jobs:
       - name: "Git Checkout"
         uses: actions/checkout@v4
 
+      - name: "Setup Node"
+        uses: actions/setup-node@v4
+        with:
+          node-version: 16
+          cache: "npm"
+
+      - name: "Restore Node Modules"
+        id: cache-npm
+        uses: actions/cache/restore@v3
+        with:
+          path: node_modules
+          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
+
+      - name: "NPM Install"
+        if: steps.cache-npm.outputs.cache-hit != 'true'
+        run: npm install
+
       - name: "Install JDK"
         uses: actions/setup-java@v3
         with:
