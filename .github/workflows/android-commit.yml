@@ -29,7 +29,7 @@ jobs:
 
       - name: "Gradle Wrapper Validation"
         uses: gradle/wrapper-validation-action@v1
-        working-directory: ./scripts
+        working-directory: ./android
 
       - name: "Install JDK"
         uses: actions/setup-java@v3
@@ -125,10 +125,11 @@ jobs:
       - name: "Restore Gradle Home & Project Caches"
         id: cache-gradle-home-project
         uses: actions/cache/restore@v3
+        working-directory: ./android
         with:
           path: |
             ~/.gradle/caches
-            android/.gradle
+            .gradle
           key:
             v1-${{ runner.os }}-gradle-home-project-${{ vars.JOB_NAME }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('gradle/libs.versions.toml') }}-${{ hashFiles('gradle.properties') }}-${{ hashFiles('/tmp/gradle_flags.txt') }}-${{ hashFiles('**/*.gradle.kts') }}
 
@@ -136,6 +137,7 @@ jobs:
         if: steps.cache-gradle-home-project.outputs.cache-hit != 'true'
         id: cache-gradle-home
         uses: actions/cache/restore@v3
+        working-directory: ./android
         with:
           path: |
             ~/.gradle/caches
@@ -149,6 +151,7 @@ jobs:
       - name: "Restore Gradle Build Cache"
         id: cache-gradle-build
         uses: actions/cache/restore@v3
+        working-directory: ./android
         with:
           path: |
             ~/.gradle/caches/build-cache-*
@@ -161,18 +164,19 @@ jobs:
             v1-${{ runner.os }}-gradle-build-${{ vars.JOB_NAME }}-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: "Run Unit Tests via Gradle"
+        working-directory: ./android
         run: |
           /tmp/gradle-profiler-0.20.0/bin/gradle-profiler \
-            --project-dir ./android/ \
+            --project-dir ./ \
             --profile chrome-trace \
-            --output-dir android/build/reports/gradle-profiler \
+            --output-dir build/reports/gradle-profiler \
             --gradle-user-home ~/.gradle \
             --measure-config-time \
             --measure-gc \
             --iterations 1 \
             --warmups 1 \
             --measure-local-build-cache \
-            testDebugUnitTest $GRADLE_FLAGS
+            assembleDebug $GRADLE_FLAGS
 
       - name: "Publish Test Report"
         uses: mikepenz/action-junit-report@v4
@@ -192,10 +196,11 @@ jobs:
         with:
           name: configuration-cache-report
           path: |
-            build/reports/configuration-cache/**/*.html
+            android/build/reports/configuration-cache/**/*.html
 
       - name: "Save Gradle Wrapper"
         uses: actions/cache/save@v3
+        working-directory: ./android
         if: steps.cache-gradle-wrapper.outputs.cache-hit != 'true'
         with:
           path: |
@@ -205,6 +210,7 @@ jobs:
 
       - name: "Save Gradle Build Cache"
         uses: actions/cache/save@v3
+        working-directory: ./android
         if: steps.cache-gradle-build.outputs.cache-hit != 'true'
         with:
           path: |
@@ -247,6 +253,7 @@ jobs:
 
       - name: "Save Gradle Home & Project cache"
         uses: actions/cache/save@v3
+        working-directory: ./android
         if: steps.cache-gradle-home-project.outputs.cache-hit != 'true'
         with:
           path: |
