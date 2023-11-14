@@ -38,7 +38,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: node_modules
-          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}-${{ hashFiles('package-lock.json') }}
+          key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}
 
       - name: "NPM Install"
         if: steps.cache-npm.outputs.cache-hit != 'true'
