@@ -11,7 +11,7 @@ registries:
     url: "https://repo.maven.apache.org/maven2/"
 updates:
   - package-ecosystem: "gradle"
-    directory: "/" # Location of package manifests
+    directory: "android/" # Location of package manifests
     target-branch: "main"
     schedule:
       interval: "daily"
@@ -20,3 +20,10 @@ updates:
     registries:
       - maven-google
       - maven-central
+  - package-ecosystem: "npm"
+    directory: "/" # Location of package manifests
+    target-branch: "main"
+    schedule:
+      interval: "daily"
+      time: "08:00"
+      timezone: "EST"
