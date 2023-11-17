@@ -90,15 +90,6 @@ jobs:
           path: /tmp/libjemalloc.so.2
           key: v1-${{ runner.os }}-jemalloc-test
 
-      - name: "Download Gradle Profiler"
-        run: curl -Ls https://repo1.maven.org/maven2/org/gradle/profiler/gradle-profiler/0.20.0/gradle-profiler-0.20.0.zip -o /tmp/gradle-profiler-0.20.0.zip
-
-      - name: "Unzip Gradle Profiler"
-        run: unzip /tmp/gradle-profiler-0.20.0.zip -d /tmp
-
-      - name: "Create Gradle Profiler Report Directory"
-        run: mkdir -p android/build/reports/gradle-profiler
-
       - name: "Print Java Flags & version"
         run: |
           java -XX:+UseParallelGC -XX:+UnlockExperimentalVMOptions -XX:+PrintFlagsFinal -version
@@ -163,27 +154,10 @@ jobs:
             v1-${{ runner.os }}-gradle-build-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('android/gradle/libs.versions.toml') }}
             v1-${{ runner.os }}-gradle-build-${{ vars.JOB_NAME }}-${{ hashFiles('android/gradle/wrapper/gradle-wrapper.properties') }}
 
-      - name: "Run Gradle Task with Profiler"
+      - name: "Run Gradle Task"
         working-directory: ./android
         run: |
-          /tmp/gradle-profiler-0.20.0/bin/gradle-profiler \
-            --project-dir ./ \
-            --profile chrome-trace \
-            --output-dir build/reports/gradle-profiler \
-            --gradle-user-home ~/.gradle \
-            --measure-config-time \
-            --measure-gc \
-            --iterations 1 \
-            --warmups 1 \
-            --measure-local-build-cache \
-            assembleDebug $GRADLE_FLAGS
-
-      - name: "Store Gradle Profiler Report"
-        uses: actions/upload-artifact@v3
-        with:
-          name: gradle-profiler-report
-          path: |
-            android/build/reports/gradle-profiler
+          ./gradlew assembleDebug $GRADLE_FLAGS
 
       - name: "Save Gradle Wrapper"
         uses: actions/cache/save@v3
