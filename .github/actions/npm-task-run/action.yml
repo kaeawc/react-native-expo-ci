@@ -13,6 +13,11 @@ inputs:
   node-version:
     description: "The version of Node to run tasks with"
     required: "true"
+  shell:
+    description: "The shell to use for any steps that use shells"
+    default: "bash"
+    required: "true"
+
 
 outputs:
   npm-home-project-cache-hit:
@@ -40,12 +45,12 @@ runs:
 
     - name: "NPM Install"
       if: steps.cache-npm.outputs.cache-hit != 'true'
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: npm install --force
 
     - name: "Run Unit Tests via NPM"
       if: ${{ inputs.npm-tasks }} != "default"
-      shell: bash
+      shell: ${{ inputs.shell }}
       run: npm run ${{ inputs.npm-tasks }}
 
     - name: "Check if any JUnit tests reports were created"

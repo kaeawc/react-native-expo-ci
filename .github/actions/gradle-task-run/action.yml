@@ -33,6 +33,10 @@ inputs:
     description: "Whether to allow Configuration Cache reuse"
     required: "true"
     default: false
+  shell:
+    description: "The shell to use for any steps that use shells"
+    default: "bash"
+    required: "true"
 
 outputs:
   gradle-home-project-cache-hit:
@@ -59,12 +63,12 @@ runs:
 
   - name: "Print Java Flags & version"
     if: ${{ inputs.debug-gradle-task-run }} == true
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: |
       java -XX:+UseParallelGC -XX:+UnlockExperimentalVMOptions -XX:+PrintFlagsFinal -version
 
   - name: "Evaluate Gradle Flags"
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: |
       
       # Note that we do not attempt to visually align JVM args - spaces included in kotlin.daemon.jvmargs causes the Kotlin compiler daemon to not run and fallback to Gradle in-process
@@ -141,7 +145,7 @@ runs:
 
   - name: "Run Unit Tests via Gradle"
     working-directory: ${{ inputs.gradle-project-directory }}
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: |
       export GRADLE_FLAGS=$(cat /tmp/gradle_flags.txt)
       echo "$(pwd)"
@@ -196,7 +200,7 @@ runs:
 
   - name: "Prepare Gradle Project & Home Caches for Configuration Cache"
     if: ${{ inputs.reuse-configuration-cache }} == 'true' && steps.cache-gradle-home-project.outputs.cache-hit != 'true'
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: |
       
       # TODO: Auto-detect when convention plugins are added, then preserve their build folders
@@ -240,7 +244,7 @@ runs:
 
   - name: "Prepare Gradle Home Cache with only Dependency & Script Caches"
     if: steps.cache-gradle-home-project.outputs.cache-hit != 'true' && steps.cache-gradle-home.outputs.cache-hit != 'true'
-    shell: bash
+    shell: ${{ inputs.shell }}
     run: |
       
       echo " "
