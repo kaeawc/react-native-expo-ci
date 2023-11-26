@@ -22,7 +22,7 @@ jobs:
       - uses: ./.github/actions/gradle-task-run
         with:
           gradle-tasks: "testDebugUnitTest"
-          allow-configuration-cache: true
+          allow-configuration-cache: false
 
   node_unit_tests:
     name: "Unit Tests"
@@ -60,7 +60,7 @@ jobs:
       - uses: ./.github/actions/gradle-task-run
         with:
           gradle-tasks: "assertModuleGraph"
-          allow-configuration-cache: true
+          allow-configuration-cache: false
 
   android-lint:
     name: "Android Lint"
@@ -72,7 +72,7 @@ jobs:
       - uses: ./.github/actions/gradle-task-run
         with:
           gradle-tasks: "lintRelease"
-          allow-configuration-cache: true
+          allow-configuration-cache: false
 
       - name: "Store Android Lint Report"
         uses: actions/upload-artifact@v3
@@ -92,7 +92,7 @@ jobs:
       - uses: ./.github/actions/gradle-task-run
         with:
           gradle-tasks: "assembleDebug"
-          allow-configuration-cache: true
+          allow-configuration-cache: false
 
       - name: "Check if APK was created"
         id: apk-output
@@ -119,7 +119,7 @@ jobs:
       - uses: ./.github/actions/gradle-task-run
         with:
           gradle-tasks: "assembleAndroidTest"
-          allow-configuration-cache: true
+          allow-configuration-cache: false
 
       - name: "Check if Test APK was created"
         id: apk-output
