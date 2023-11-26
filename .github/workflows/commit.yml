@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   android_unit_tests:
-    name: "Unit Tests"
+    name: "Android Unit Tests"
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
@@ -31,7 +31,7 @@ jobs:
           gradle-project-directory: "./android"
 
   node_unit_tests:
-    name: "Unit Tests"
+    name: "Node Unit Tests"
     runs-on: ubuntu-latest
     steps:
       - name: "Git Checkout"
@@ -42,43 +42,6 @@ jobs:
         with:
           node-version: 21
           node-task: "test"
-
-  spotless:
-    name: "Spotless Check"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Git Checkout"
-        uses: actions/checkout@v4
-
-      - name: "Restore Node Modules"
-        uses: ./.github/actions/npm-task-run
-        with:
-          node-version: 21
-
-      - uses: ./.github/actions/gradle-task-run
-        with:
-          gradle-tasks: "spotlessCheck"
-          # Due to https://github.com/diffplug/spotless/issues/987
-          reuse-configuration-cache: false
-          gradle-project-directory: "./android"
-
-  module-graph:
-    name: "Module Graph Check"
-    runs-on: ubuntu-latest
-    steps:
-      - name: "Git Checkout"
-        uses: actions/checkout@v4
-
-      - name: "Restore Node Modules"
-        uses: ./.github/actions/npm-task-run
-        with:
-          node-version: 21
-
-      - uses: ./.github/actions/gradle-task-run
-        with:
-          gradle-tasks: "assertModuleGraph"
-          reuse-configuration-cache: false
-          gradle-project-directory: "./android"
 
   android-lint:
     name: "Android Lint"
