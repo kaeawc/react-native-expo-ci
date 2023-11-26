@@ -23,6 +23,7 @@ jobs:
         with:
           gradle-tasks: "testDebugUnitTest"
           reuse-configuration-cache: false
+          gradle-project-directory: "./android/"
 
   node_unit_tests:
     name: "Unit Tests"
@@ -49,6 +50,7 @@ jobs:
           gradle-tasks: "spotlessCheck"
           # Due to https://github.com/diffplug/spotless/issues/987
           reuse-configuration-cache: false
+          gradle-project-directory: "./android/"
 
   module-graph:
     name: "Module Graph Check"
@@ -61,6 +63,7 @@ jobs:
         with:
           gradle-tasks: "assertModuleGraph"
           reuse-configuration-cache: false
+          gradle-project-directory: "./android/"
 
   android-lint:
     name: "Android Lint"
@@ -73,6 +76,7 @@ jobs:
         with:
           gradle-tasks: "lintRelease"
           reuse-configuration-cache: false
+          gradle-project-directory: "./android/"
 
       - name: "Store Android Lint Report"
         uses: actions/upload-artifact@v3
@@ -93,6 +97,7 @@ jobs:
         with:
           gradle-tasks: "assembleDebug"
           reuse-configuration-cache: false
+          gradle-project-directory: "./android/"
 
       - name: "Check if APK was created"
         id: apk-output
@@ -120,6 +125,7 @@ jobs:
         with:
           gradle-tasks: "assembleAndroidTest"
           reuse-configuration-cache: false
+          gradle-project-directory: "./android/"
 
       - name: "Check if Test APK was created"
         id: apk-output
