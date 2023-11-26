@@ -49,13 +49,13 @@ runs:
       run: npm install --force
 
     - name: "Run Unit Tests via NPM"
-      if: ${{ inputs.npm-tasks != "default" }}
+      if: ${{ inputs.npm-tasks != 'default' }}
       shell: ${{ inputs.shell }}
       run: npm run ${{ inputs.npm-tasks }}
 
     - name: "Check if any JUnit tests reports were created"
       id: junit-reports-exist
-      if: ${{ inputs.npm-tasks != "default" }} && always() # always run even if the previous step fails
+      if: ${{ inputs.npm-tasks != 'default' }} && always() # always run even if the previous step fails
       uses: andstor/file-existence-action@v2
       with:
         files: 'build/reports/jest-junit/junit.xml'
