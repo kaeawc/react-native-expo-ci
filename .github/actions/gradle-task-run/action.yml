@@ -29,8 +29,8 @@ inputs:
   reuse-configuration-cache:
     description: "Whether to allow Configuration Cache reuse"
     required: "true"
-  debug-gradle-task-run:
-    description: "Whether to allow Configuration Cache reuse"
+  debug:
+    description: "Whether to show debug logging"
     required: "true"
     default: false
   shell:
@@ -62,7 +62,7 @@ runs:
     id: cache-jemalloc
 
   - name: "Print Java Flags & version"
-    if: ${{ inputs.debug-gradle-task-run }} == true
+    if: ${{ inputs.debug == 'true' }}
     shell: ${{ inputs.shell }}
     run: |
       java -XX:+UseParallelGC -XX:+UnlockExperimentalVMOptions -XX:+PrintFlagsFinal -version
