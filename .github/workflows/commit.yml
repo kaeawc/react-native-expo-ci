@@ -97,7 +97,7 @@ jobs:
         with:
           gradle-tasks: "assembleDebug"
           reuse-configuration-cache: false
-          gradle-project-directory: "./android/"
+          gradle-project-directory: "./android"
 
       - name: "Check if APK was created"
         id: apk-output
