@@ -105,7 +105,7 @@ runs:
       method: MD5
 
   - name: "Restore Gradle Home & Project Caches"
-    if: ${{ inputs.reuse-configuration-cache }} == 'true'
+    if: ${{ inputs.reuse-configuration-cache == 'true' }}
     id: cache-gradle-home-project
     uses: actions/cache/restore@v3
     with:
@@ -199,13 +199,13 @@ runs:
         v2-${{ runner.os }}-gradle-build-${{ steps.gradle-task-hash.outputs.digest }}-${{ hashFiles('${{ inputs.gradle-project-directory }}/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('${{ inputs.gradle-project-directory }}/gradle/libs.versions.toml') }}-${{ hashFiles('${{ inputs.gradle-project-directory }}/gradle.properties') }}-${{ hashFiles('/tmp/gradle_flags.txt') }}-${{ hashFiles('${{ inputs.gradle-project-directory }}/**/*.gradle.kts') }}-${{ hashFiles('${{ inputs.gradle-project-directory }}/**/*.kt') }}
 
   - name: "Prepare Gradle Project & Home Caches for Configuration Cache"
-    if: ${{ inputs.reuse-configuration-cache }} == 'true' && steps.cache-gradle-home-project.outputs.cache-hit != 'true'
+    if: ${{ inputs.reuse-configuration-cache == 'true' }} && steps.cache-gradle-home-project.outputs.cache-hit != 'true'
     shell: ${{ inputs.shell }}
     run: |
       
       # TODO: Auto-detect when convention plugins are added, then preserve their build folders
       echo "Preserve project Gradle cache"
-      find .gradle -maxdepth 1 -type d \
+      find ${{ inputs.gradle-project-directory }}/.gradle -maxdepth 1 -type d \
         -regex ".gradle/.*" \
         -not -regex ".*/${{ inputs.gradle-version }}" \
         -not -regex ".*/configuration-cache" | \
@@ -234,7 +234,7 @@ runs:
 
   - name: "Save Gradle Home & Project cache"
     uses: actions/cache/save@v3
-    if: ${{ inputs.reuse-configuration-cache }} == 'true' && steps.cache-gradle-home-project.outputs.cache-hit != 'true'
+    if: ${{ inputs.reuse-configuration-cache == 'true' }} && steps.cache-gradle-home-project.outputs.cache-hit != 'true'
     with:
       path: |
         ${{ inputs.gradle-home-directory }}/caches
