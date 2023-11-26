@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`renders image correctly 1`] = `
+<Image
+  src="https://randomuser.me/api/portraits/lego/0.jpg"
+  style={
+    [
+      undefined,
+    ]
+  }
+/>
+`;
+
+exports[`renders text correctly 1`] = `
+<Text
+  style={
+    [
+      {
+        "color": "#000",
+      },
+      undefined,
+    ]
+  }
+>
+  Snapshot test!
+</Text>
+`;
+
+exports[`renders view correctly 1`] = `
+<View
+  style={
+    [
+      {
+        "backgroundColor": "#fff",
+      },
+      undefined,
+    ]
+  }
+>
+  Snapshot test!
+</View>
+`;

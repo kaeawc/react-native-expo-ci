@@ -1,0 +1,65 @@
+#file: noinspection YAMLSchemaValidation
+name: "npm-task-run"
+description: ""
+inputs:
+  npm-tasks:
+    description: "Set of tasks to be executed by npm"
+    example: '["test", "help"]'
+    required: "true"
+  job-name:
+    description: "The name of the GitHub Action job being run"
+    required: "true"
+  node-version:
+    description: "The version of Node to run tasks with"
+    required: "true"
+
+outputs:
+  npm-home-project-cache-hit:
+    value: ${{ steps.npm-home-project.outputs.cache-hit }}
+  cache-npm-home-cache-hit:
+    value: ${{ steps.cache-npm-home.outputs.cache-hit }}
+  cache-npm-build-cache-hit:
+    value: ${{ steps.cache-npm-build.outputs.cache-hit }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup Node"
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: "npm"
+
+    - name: "Restore Node Modules"
+      id: cache-npm
+      uses: actions/cache/restore@v3
+      with:
+        path: node_modules
+        key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}
+
+    - name: "NPM Install"
+      if: steps.cache-npm.outputs.cache-hit != 'true'
+      run: npm install --force
+
+    - name: "Run Unit Tests via NPM"
+      run: npm run ${{ inputs.npm-tasks }}
+
+    - name: "Check if any JUnit tests reports were created"
+      id: junit-reports-exist
+      if: always() # always run even if the previous step fails
+      uses: andstor/file-existence-action@v2
+      with:
+        files: 'build/reports/jest-junit/junit.xml'
+
+    - name: "Publish Test Report"
+      uses: mikepenz/action-junit-report@v4
+      if: steps.junit-reports-exist.outputs.files_exists == 'true'
+      with:
+        report_paths: 'build/reports/jest-junit/junit.xml'
+
+    - name: "Save Node Modules"
+      uses: actions/cache/save@v3
+      if: steps.cache-npm.outputs.cache-hit != 'true'
+      with:
+        path: node_modules
+        key: v1-${{ runner.os }}-node-modules-${{ hashFiles('package.json') }}
