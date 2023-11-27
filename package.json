@@ -26,7 +26,7 @@
   "dependencies": {
     "@expo/vector-icons": "^13.0.0",
     "@react-navigation/native": "^6.1.9",
-    "expo": "50.0.0-canary-20231123-1b19f96",
+    "expo": "50.0.0-canary-20231125-d600e44",
     "expo-font": "11.6.0",
     "expo-linking": "6.0.0",
     "expo-router": "3.2.0",
