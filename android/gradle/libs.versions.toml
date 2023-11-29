@@ -1,0 +1,64 @@
+[versions]
+build-android-buildTools = "34.0.0"
+build-android-compileSdk = "34"
+build-android-minSdk = "21"
+build-android-targetSdk = "34"
+build-android-agp = "8.1.4"
+build-android-desugar = "2.0.4"
+build-android-ndk = "23.1.7779620"
+build-kotlin = "1.8.10"
+build-kotlin-language = "1.8"
+build-java-asm = "9.6"
+build-java-target = "20"
+build-gradle-dependencyAnalysis = "1.26.0"
+build-gradle-graphAssertion = "2.5.0"
+build-gradle-doctor = "0.9.1"
+build-gradle-ktfmt = "0.46"
+build-gradle-triplet-play = "3.8.6"
+androidx-core = "1.12.0"
+androidx-lifecycle-runtime = "2.6.2"
+
+react-native = "0.72.7"
+fresco = "2.5.0"
+flipper = "0.182.0"
+
+test-junit = "4.13.2"
+test-androidx-junit = "1.1.5"
+test-androidx-espresso = "3.5.1"
+
+[plugins]
+dependencyAnalysis = { id = "com.autonomousapps.dependency-analysis", version.ref = "build-gradle-dependencyAnalysis" }
+doctor = { id = "com.osacky.doctor", version.ref = "build-gradle-doctor" }
+graphAssertion = { id = "com.jraska.module.graph.assertion", version.ref = "build-gradle-graphAssertion" }
+publish = { id = "com.github.triplet.play", version.ref = "build-gradle-triplet-play" }
+react-native = { id = "com.facebook.react", version.ref = "react-native" }
+
+[libraries]
+kgp = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "build-kotlin" }
+agp = { module = "com.android.tools.build:gradle", version.ref = "build-android-agp" }
+
+asm-bom = { module = "org.ow2.asm:asm-bom", version.ref = "build-java-asm" }
+desugar = { module = "com.android.tools:desugar_jdk_libs", version.ref = "build-android-desugar" }
+
+androidx-core = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
+androidx-lifecycle-runtime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "androidx-lifecycle-runtime" }
+
+react-native = { module = "com.facebook.react:react-android", version.ref = "react-native" }
+fresco-core = { module = "com.facebook.fresco:fresco", version.ref = "fresco" }
+fresco-okhttp = { module = "com.facebook.fresco:imagepipeline-okhttp3", version.ref = "fresco" }
+fresco-gif = { module = "com.facebook.fresco:animated-gif", version.ref = "fresco" }
+fresco-webp = { module = "com.facebook.fresco:webpsupport", version.ref = "fresco" }
+fresco-webp-animated = { module = "com.facebook.fresco:animated-webp", version.ref = "fresco" }
+flipper-core = { module = "com.facebook.flipper:flipper", version.ref = "flipper" }
+flipper-plugin-network = { module = "com.facebook.flipper:flipper-network-plugin", version.ref = "flipper" }
+flipper-plugin-fresco = { module = "com.facebook.flipper:flipper-fresco-plugin", version.ref = "flipper" }
+hermes = { module = "com.facebook.react:hermes-android", version.ref = "react-native" }
+
+junit = { module = "junit:junit", version.ref = "test-junit" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "test-androidx-junit" }
+androidx-espresso = { module = "androidx.test.espresso:espresso-core", version.ref = "test-androidx-espresso" }
+
+[bundles]
+unit-test = [
+    "junit"
+]
